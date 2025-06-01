@@ -26,10 +26,9 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: . # Use the current directory (where your Dockerfile is) as the build context
-          file: ./Dockerfile # Explicitly point to your Dockerfile
-          push: true # Tell the action to push after building
-          tags: | # Tags for the image
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/sre-project-app:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/sre-project-app:${{ github.sha }}
-            # The image will be tagged as 'latest' and also with the unique Git commit SHA for versioning
