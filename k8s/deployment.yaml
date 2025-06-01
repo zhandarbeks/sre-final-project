@@ -1,0 +1,29 @@
+# k8s/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sre-app-deployment      # Name of your deployment
+  labels:
+    app: sre-app              # Label to identify your application
+spec:
+  replicas: 1                 # Start with 1 copy of your application
+  selector:
+    matchLabels:
+      app: sre-app            # This deployment manages pods with this label
+  template:
+    metadata:
+      labels:
+        app: sre-app          # Pods created by this deployment will have this label
+    spec:
+      containers:
+      - name: sre-app-container # Name of the container within the pod
+        image: fergumal/sre-project-app:latest # Your Docker image from Docker Hub
+        ports:
+        - containerPort: 5000   # The port your Flask app listens on
+        resources:                # Resource requests and limits (IMPORTANT for HPA)
+          requests:
+            cpu: "100m"         # Request 0.1 CPU core
+            memory: "128Mi"     # Request 128 MB of memory
+          limits:
+            cpu: "500m"         # Limit to 0.5 CPU core
+            memory: "256Mi"     # Limit to 256 MB of memory

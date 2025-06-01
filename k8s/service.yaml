@@ -1,0 +1,15 @@
+# k8s/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: sre-app-service  # Name of your service
+spec:
+  type: NodePort         # Exposes the service on each Node's IP at a static port
+  selector:
+    app: sre-app        # This MUST match the labels of the Pods in your Deployment
+  ports:
+    - protocol: TCP
+      port: 80            # Port the service will listen on (within the cluster)
+      targetPort: 5000    # Port on your container that the service will forward traffic to
+      # nodePort: 30081   # Optional: You can specify a NodePort (30000-32767).
+                          # If omitted, Kubernetes will assign a random one.

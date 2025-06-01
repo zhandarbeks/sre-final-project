@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: fergumal/sre-project-app:v3
+    image: fergumal/sre-project-app:latest
     ports:
       - "8081:5000"
     restart: unless-stopped
