@@ -1,0 +1,5 @@
+modules:
+  http_2xx:
+    prober: http
+    http:
+      valid_status_codes: [200, 201, 202] # Succeeds if the HTTP status code is 2xx

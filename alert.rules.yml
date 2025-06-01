@@ -1,0 +1,35 @@
+groups:
+  - name: ApplicationAlerts
+    rules:
+      # Alert Rule 1: Is the application reachable? (Uses Blackbox Exporter)
+      # This alert fires if the Blackbox probe fails, meaning the app is down or not returning a 2xx status code.
+      - alert: AppIsDown
+        expr: probe_success{job="blackbox"} == 0
+        for: 1m # Condition must be true for 1 minute before firing
+        labels:
+          severity: critical
+        annotations:
+          summary: "Application is down!"
+          description: "The application at {{ $labels.instance }} is not responding correctly."
+
+      # Alert Rule 2: Is the server's CPU load too high? (Uses Node Exporter)
+      # This alert fires if the 1-minute average CPU load is over 1.0 for 5 minutes straight.
+      - alert: HighCpuLoad
+        expr: node_load1 > 1.0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU load detected on host {{ $labels.instance }}"
+          description: "The CPU load is {{ $value }}. The server may be overloaded."
+
+      # Alert Rule 3: Is our Availability SLO being violated? (Uses Application Metrics)
+      # This alert fires if our 5-minute availability drops below our 99.5% SLO target.
+      - alert: AvailabilitySLOViolation
+        expr: (sum(rate(flask_http_request_total{status=~"2.."}[5m])) / sum(rate(flask_http_request_total[5m]))) * 100 < 99.5
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Availability SLO Violation!"
+          description: "The application's availability has dropped to {{ $value | printf `%.2f` }}%, which is below the 99.5% SLO."
